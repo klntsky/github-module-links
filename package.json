@@ -1,0 +1,26 @@
+{
+  "name": "github-module-links",
+  "version": "1.0.0",
+  "description": "Inserts direct repository links for modules used in source code on github",
+  "main": "index.js",
+  "dependencies": {
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.2.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "join-path": "^1.1.1",
+    "npm-registry-package-info": "^1.0.5",
+    "reto-js": "^1.0.2",
+    "url-join": "^2.0.2",
+    "urljoin": "^0.1.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "github",
+    "npm"
+  ],
+  "author": "klntsky",
+  "license": "MIT"
+}
