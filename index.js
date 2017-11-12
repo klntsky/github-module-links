@@ -12,8 +12,13 @@ var config = {
     github_repos: true,
     // Whether to allow logging
     log: false,
+    holders: {
+        'git+https://github.com/npm/deprecate-holder.git': name =>
+            'https://www.npmjs.com/package/' + name,
+        'git+https://github.com/npm/security-holder.git': name =>
+            'https://www.npmjs.com/package/' + name,
+    }
 }
-
 
 function update () {
     processImports(getImports());
@@ -165,6 +170,7 @@ function processImports (imports) {
     packages.forEach(p => processPackage(p, imports));
 }
 
+
 function processPackage (package, imports) {
     new Promise((resolve, reject) => GM_xmlhttpRequest({
         url: config.registry(package),
@@ -181,27 +187,36 @@ function processPackage (package, imports) {
         onerror: reject,
     })).then(response => {
         try {
-            // `new URL(response.repository.url)` incorrectly handles
-            // `git+https` protocol.
-            var url = response.repository.url.split('/')
-            if (url.length >= 5) {
-                var hostname = url[2];
-                var username = url[3];
-                var repo = url[4];
+            var linkURL;
+            var url_parts = response.repository.url.split('/');
 
-                if (repo.endsWith('.git') && url.length == 5) {
+            if (Object.keys(config.holders)
+                      .includes(response.repository.url)) {
+                linkURL = config.holders[response.repository.url](package);
+            } else if (url_parts.length >= 5) {
+                // `new URL(response.repository.url)` incorrectly handles
+                // `git+https` protocol.
+                var hostname = url_parts[2];
+                var username = url_parts[3];
+                var repo = url_parts[4];
+
+                if (repo.endsWith('.git') && url_parts.length == 5) {
                     repo = repo.substr(0, repo.length - 4);
                 }
 
-                imports[package].forEach(({ elem }) => {
-                    if (hostname == 'github.com' && config.github_repos) {
-                        addLink(elem, 'https://github.com/' + username + '/' +
-                                      repo + '/');
-                    } else {
-                        addLink(elem, config.package_url(package, response.repository.url));
-                    }
-                });
+                if (hostname == 'github.com' && config.github_repos) {
+                    linkURL = 'https://github.com/' + username + '/' + repo + '/';
+                } else {
+                    linkURL = config.package_url(package, response.repository.url);
+                }
+            } else {
+                return;
             }
+
+            imports[package].forEach(({ elem }) => {
+                addLink(elem, linkURL);
+            });
+
         } catch (e) {
             log('processPackage', 'error:', e);
         }
