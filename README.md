@@ -22,3 +22,4 @@ The file is located [here](https://github.com/8084/github-module-links/raw/maste
 - replace system modules with links to their sources instead of [security-holder](https://github.com/npm/security-holder/) module
 - process repository URLs more carefully (consider rare cases when `repository.type` is not `git`, etc.)
 - consider adding more programming languages and package registries
+- add link to the main file of the module instead of the repository

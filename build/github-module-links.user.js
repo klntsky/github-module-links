@@ -62,18 +62,18 @@ function getImports () {
         }
     });
 
-    document.querySelectorAll('span.pl-k + span.pl-smi + span.pl-k + span.pl-s').forEach(el => {
+    document.querySelectorAll('.js-file-line > span.pl-k + span.pl-smi + span.pl-k + span.pl-s').forEach(el => {
         var result = { success } = parseImport(el);
         if (success) {
             list.push(result);
         }
     });
 
-    list.forEach(({ name, elem }) => {
-        if (imports[name] instanceof Array) {
-            imports[name].push(elem);
+    list.forEach(entry => {
+        if (imports[entry.name] instanceof Array) {
+            imports[entry.name].push(entry);
         } else {
-            imports[name] = [elem];
+            imports[entry.name] = [entry];
         }
     });
 
@@ -148,19 +148,21 @@ function getName(str) {
 function processImports (imports) {
     var packages = [];
     log('prcessImports', imports);
+
     for (var imp in imports) {
         if (imports.hasOwnProperty(imp)) {
             // If path is not relative
             if (imp[0] !== '.') {
                 packages.push(imp);
             } else {
-                imports[imp].forEach(elem => {
+                imports[imp].forEach(({ elem, name }) => {
                     // Assume the extension is omitted
-                    if (!imp.endsWith('.js')) {
-                        imp += '.js';
+                    if (!name.endsWith('.js')) {
+                        name += '.js';
                     }
-                    addLink(elem, imp);
+                    addLink(elem, name);
                 });
+
             }
         }
     }
@@ -197,14 +199,14 @@ function processPackage (package, imports) {
                     repo = repo.substr(0, repo.length - 4);
                 }
 
-                if (hostname == 'github.com' && config.github_repos) {
-                    imports[package].forEach(elem => {
+                imports[package].forEach(({ elem }) => {
+                    if (hostname == 'github.com' && config.github_repos) {
                         addLink(elem, 'https://github.com/' + username + '/' +
                                       repo + '/');
-                    });
-                } else {
-                    addLink(elem, config.package_url(package, response.repository.url));
-                }
+                    } else {
+                        addLink(elem, config.package_url(package, response.repository.url));
+                    }
+                });
             }
         } catch (e) {
             log('processPackage', 'error:', e);
