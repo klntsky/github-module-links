@@ -164,7 +164,7 @@ function processImports (imports) {
             } else {
                 imports[imp].forEach(({ elem, name }) => {
                     // Assume the extension is omitted
-                    if (!name.endsWith('.js')) {
+                    if (!name.endsWith('.js') && !name.endsWith('.json')) {
                         name += '.js';
                     }
                     addLink(elem, name);
