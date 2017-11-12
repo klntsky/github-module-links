@@ -62,7 +62,7 @@ function getImports () {
         }
     });
 
-    document.querySelectorAll('.js-file-line > span.pl-k + span.pl-smi + span.pl-k + span.pl-s').forEach(el => {
+    document.querySelectorAll('.js-file-line > span.pl-smi + span.pl-k + span.pl-s').forEach(el => {
         var result = { success } = parseImport(el);
         if (success) {
             list.push(result);
@@ -119,8 +119,15 @@ function parseImport (str) {
 
     try {
         var frm = str.previousElementSibling;
-        var name = frm.previousElementSibling;
-        var imp = name.previousElementSibling;
+        var imp = frm.previousElementSibling;
+
+        while (imp.textContent !== 'import') {
+            if (imp.previousElementSibling !== null) {
+                imp = imp.previousElementSibling;
+            } else {
+                return fail;
+            }
+        }
 
         if (frm.textContent === 'from' &&
             imp.textContent === 'import') {
