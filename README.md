@@ -12,7 +12,7 @@ Check the source code for configurable options.
 
 Follow the [userscript installation instructions](https://github.com/OpenUserJs/OpenUserJS.org/wiki/Userscript-Beginners-HOWTO#how-do-i-get-going).
 
-The file is located [here](https://github.com/8084/github-module-links/raw/master/build/github-module-links.user.js).
+The file is located [here](https://raw.githubusercontent.com/8084/github-module-links/master/build/github-module-links.user.js)).
 
 
 # TODO
