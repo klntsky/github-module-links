@@ -39,30 +39,95 @@ function log () {
 // values. If the imports are already processed this function will not return
 // them.
 function getImports () {
+    var list = [];
     var imports = {};
 
     document.querySelectorAll('.js-file-line > span.pl-c1').forEach(el => {
-        try {
-            var s = el.nextSibling.nextSibling;
-            if (el.textContent === 'require'
-                && el.nextSibling.nodeType === 3
-                && el.nextSibling.textContent.trim() === '('
-                && s.classList.contains('pl-s')
-                && s.nextSibling.nodeType === 3
-                && s.nextSibling.textContent.trim().startsWith(')')) {
-                var name = s.textContent.substr(1, s.textContent.length - 2);
-
-                if (!name) return;
-                if (imports[name] instanceof Array) {
-                    imports[name].push(s);
-                } else {
-                    imports[name] = [s];
-                }
-            }
-        } catch (e) {
+        var result = { success } = parseRequire(el);
+        if (success) {
+            list.push(result);
         }
     });
+
+    document.querySelectorAll('span.pl-k + span.pl-smi + span.pl-k + span.pl-s').forEach(el => {
+        var result = { success } = parseImport(el);
+        if (success) {
+            list.push(result);
+        }
+    });
+
+    list.forEach(({ name, elem }) => {
+        if (imports[name] instanceof Array) {
+            imports[name].push(elem);
+        } else {
+            imports[name] = [elem];
+        }
+    });
+
     return imports;
+}
+
+// Parse `require('some-module')` definition
+function parseRequire (el) {
+    var fail = { success: false };
+
+    try {
+        // Opening parenthesis
+        var ob = el.nextSibling;
+        // Module name
+        var str = ob.nextSibling;
+        // Closing parenthesis
+        var cb = str.nextSibling;
+
+        if (el.textContent === 'require'
+            && ob.nodeType === 3
+            && ob.textContent.trim() === '('
+            && str.classList.contains('pl-s')
+            && cb.nodeType === 3
+            && cb.textContent.trim().startsWith(')')) {
+            var name = getName(str);
+            if (!name) return fail;
+            return {
+                name: name,
+                elem: str,
+                success: true,
+            };
+        }
+
+        return fail;
+    } catch (e) {
+        return fail;
+    }
+}
+
+// Parse `import something from 'some-module` defintion
+function parseImport (str) {
+    var fail = { success: false };
+
+    try {
+        var frm = str.previousElementSibling;
+        var name = frm.previousElementSibling;
+        var imp = name.previousElementSibling;
+
+        if (frm.textContent === 'from' &&
+            imp.textContent === 'import') {
+            var name = getName(str);
+            return {
+                name: name,
+                elem: str,
+                success: true,
+            };
+        }
+
+        return fail;
+    } catch (e) {
+        return fail;
+    }
+}
+
+// Convert element containing module name to the name (strip quotes from textContent)
+function getName(str) {
+    return str.textContent.substr(1, str.textContent.length - 2);
 }
 
 // Add relative links for file imports and call processPackage for each package
