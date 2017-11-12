@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name        github-js-module-links
-// @namespace   github-js-module-links
+// @name        Github module links
+// @namespace   github-module-links
 // @version     1.0.0
 // @author      klntsky
 // @run-at      document-end
@@ -12,7 +12,7 @@
 
 var config = {
     // Whether to add `target='_blank'` to all of the links inserted
-    open_new_tabs: true,
+    open_new_tabs: false,
     // Mapping from package names to registry URLs
     registry: (package) => 'https://registry.npmjs.org/' + package,
     // Mapping from package names to package URLs (used as fallback)

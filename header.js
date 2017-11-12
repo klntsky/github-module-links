@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name        github-js-module-links
-// @namespace   github-js-module-links
+// @name        Github module links
+// @namespace   github-module-links
 // @version     1.0.0
 // @author      klntsky
 // @run-at      document-end
