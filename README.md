@@ -23,3 +23,9 @@ The file is located [here](https://raw.githubusercontent.com/8084/github-module-
 - process repository URLs more carefully (consider rare cases when `repository.type` is not `git`, etc.)
 - consider adding more programming languages and package registries
 - add link to the main file of the module instead of the repository
+
+# Links
+
+- [Github](https://github.com/8084/github-module-links)
+- [OpenUserJS](https://openuserjs.org/scripts/8084/Github_module_links)
+- [Greasyfork](https://greasyfork.org/en/scripts/36484-github-module-links)
