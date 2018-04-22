@@ -40,17 +40,6 @@ function update () {
     processImports(getImports());
 }
 
-function startUpdateTick () {
-    var lastLocation = document.location.href;
-    setInterval(() => {
-        if (lastLocation !== document.location.href) {
-            lastLocation = document.location.href;
-            update();
-            setTimeout(update, 1000);
-        }
-    }, 1000);
-}
-
 function log () {
     if (config.log)
         console.log.apply(console, arguments);
@@ -251,5 +240,19 @@ function addLink (elem, url) {
     a.appendChild(elem);
 }
 
+function startObserver () {
+    var callback = function(mutationsList) {
+        for(var mutation of mutationsList) {
+            if (mutation.type == 'childList') {
+                update();
+            }
+        }
+    };
+
+    var observer = new MutationObserver(callback);
+    observer.observe(document.body, { attributes: false,
+                                      childList: true });
+}
+
 update();
-startUpdateTick();
+startObserver();
