@@ -2,7 +2,7 @@
 // @name        Github module links
 // @namespace   github-module-links
 // @description Inserts direct repository links for modules used in source code on github.
-// @version     1.0.1
+// @version     1.0.2
 // @author      klntsky
 // @license     MIT
 // @run-at      document-end
