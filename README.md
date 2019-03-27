@@ -1,3 +1,7 @@
+# tl;dr
+
+Use https://github.com/fiatjaf/module-linker instead.
+
 # github-module-links
 
 This userscript inserts direct repository links for modules used in source code on github. Currently only JS & npm are supported.
